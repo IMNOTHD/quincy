@@ -1,0 +1,25 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: quincy
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtualHost: /
+
+  data:
+    mongodb:
+      host: impiggy.cn
+      port: 27017
+      database: qqbot_kun
+      authentication-database: qqbot_kun
+      username: bot
+      password: kun123
+
+logging:
+  path: /var/logs
