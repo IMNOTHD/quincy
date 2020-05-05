@@ -17,6 +17,6 @@ public class MessageReceiver {
 
     @RabbitHandler
     public void messageHandle(String message) throws InterruptedException {
-        System.out.printf("handle: %S\n", message);
+
     }
 }
