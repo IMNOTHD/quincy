@@ -5,7 +5,7 @@ package com.piggy.quincy.common;
  * @date 2020/5/3 17:16
  */
 public enum ResultCode implements IErrorCode {
-    // 操作码
+    // Response Cdoe
     SUCCESS(200, "操作成功"),
     FAILED(500, "操作失败"),
     VALIDATE_FAILED(404, "参数检验失败"),

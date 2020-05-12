@@ -6,7 +6,7 @@ spring:
     name: quincy
 
   rabbitmq:
-    host: 127.0.0.1
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest

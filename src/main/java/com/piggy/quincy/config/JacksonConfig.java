@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Jackson配置类
@@ -29,13 +28,13 @@ public class JacksonConfig {
     public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
 
-        // 字段保留，将null值转为[]
+        // 字段保留，将null值转为""
         objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
             @Override
             public void serialize(Object o, JsonGenerator jsonGenerator,
                                   SerializerProvider serializerProvider)
                     throws IOException, JsonProcessingException {
-                jsonGenerator.writeArray(new int[0], 0, 0);
+                jsonGenerator.writeString("");
             }
         });
         return objectMapper;

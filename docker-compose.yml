@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app-qunicy:
+    image: app-quincy
+    container_name: app-quincy
+    build:
+      context: . # 配置需要构建Dockerfile的路径 相对于docker-compose.yml
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8090 # 将本机8090端口映射到容器8090端口
+    restart: always
+    depends_on:
+      - rabbitmq
+    networks: # 网络 连接rabbitmq
+      - backend
+    external_links:
+      - rabbitmq:rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.8.3-management
+    container_name: rabbitmq-quincy
+    restart: always
+    ports:
+      - 15672:15672
+      - 5672:5672
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    networks:
+      - backend
+
+volumes:
+  db-data:
+networks:
+  backend:
