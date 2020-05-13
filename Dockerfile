@@ -33,7 +33,7 @@ COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
 # 等待前置服务启动完成, 拉起spring服务
-USER root
 COPY wait-for-it.sh .
 RUN chmod +x ./wait-for-it.sh
+RUN chmod +x wait-for-it.sh
 ENTRYPOINT ["./wait-for-it.sh","rabbitmq:5672","-t","20","--","java","-cp","app:app/lib/*","com.piggy.quincy.QuincyApplication"]
