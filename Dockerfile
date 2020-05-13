@@ -7,6 +7,7 @@ WORKDIR /app
 # 将 maven 可执行程序复制到容器中
 COPY mvnw .
 COPY .mvn .mvn
+RUN chmod +x mvnw
 
 # 复制pom.xml文件
 COPY pom.xml .
