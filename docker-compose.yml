@@ -7,7 +7,7 @@ services:
       context: . # 配置需要构建Dockerfile的路径 相对于docker-compose.yml
       dockerfile: Dockerfile
     ports:
-      - 8090:8090 # 将本机8090端口映射到容器8090端口
+      - 8090:8090
     restart: always
     depends_on:
       - rabbitmq

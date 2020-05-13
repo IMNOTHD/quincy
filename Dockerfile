@@ -1,4 +1,4 @@
-#### 建立spring-boot项目
+#### 构建spring-boot项目
 FROM openjdk:8-jdk-alpine as build
 
 # 设置项目在docker容器中工作目录
@@ -21,8 +21,8 @@ COPY src src
 RUN ./mvnw package -DskipTests -s .mvn/settings.xml
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-#### 设置能运行应用程序的最小docker容器
-FROM openjdk:8-jre-alpine
+#### 能运行应用程序的最小docker容器
+FROM openjdk:8-jre-slim
 
 ARG DEPENDENCY=/app/target/dependency
 
@@ -31,4 +31,6 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.piggy.quincy.QuincyApplication"]
+# 等待前置服务启动完成, 拉起spring服务
+COPY wait-for-it.sh .
+ENTRYPOINT ["./wait-for-it.sh","rabbitmq:5672","-t","20","--","java","-cp","app:app/lib/*","com.piggy.quincy.QuincyApplication"]

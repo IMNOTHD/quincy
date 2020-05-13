@@ -1,25 +1,3 @@
-server:
-  port: 8090
-
 spring:
-  application:
-    name: quincy
-
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: guest
-    password: guest
-    virtualHost: /
-
-  data:
-    mongodb:
-      host: impiggy.cn
-      port: 27017
-      database: qqbot_kun
-      authentication-database: qqbot_kun
-      username: bot
-      password: kun123
-
-logging:
-  path: /var/logs
+  profiles:
+    active: prod
