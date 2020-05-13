@@ -1,5 +1,5 @@
 #### 构建spring-boot项目
-FROM openjdk:8-jdk-alpine as build
+FROM openjdk:8-jdk-alpine AS build
 
 # 设置项目在docker容器中工作目录
 WORKDIR /app
