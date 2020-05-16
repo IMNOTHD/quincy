@@ -22,6 +22,6 @@ public class MessageSender {
 
     public void sendMessage(String message) {
         rabbitTemplate.convertAndSend(QUEUE_NAME, message);
-        logger.info("send message: {}", message);
+        logger.info("receive message: {}", message);
     }
 }

@@ -22,6 +22,6 @@ public class MessageReceiver {
 
     @RabbitHandler
     public void messageHandle(String message) throws InterruptedException {
-        logger.info("receive message: {}", message);
+        logger.info("handle message: {}", message);
     }
 }
