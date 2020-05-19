@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * 接收消息上报Controller类
+ *
  * @author IMNOTHD
  * @date 2020/5/3 16:59
  */
@@ -21,6 +23,7 @@ public class MessageController {
 
     /**
      * 收到消息后, 向消息队列里发送消息
+     *
      * @param message 收到的消息
      * @return 状态码
      */

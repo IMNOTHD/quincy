@@ -1,5 +1,6 @@
 package com.piggy.quincy.component;
 
+import com.piggy.quincy.config.BotConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -11,6 +12,7 @@ import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 
 /**
  * 消息的处理者
+ *
  * @author IMNOTHD
  * @date 2020/5/5 0:35
  */

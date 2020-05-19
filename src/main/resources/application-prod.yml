@@ -21,6 +21,13 @@ spring:
       username: bot
       password: kun123
 
+  redis:
+    host: redis
+    port: 6379
+    database: 0
+    password:
+    timeout: 300ms
+
 # 日志配置
 logging:
   file:

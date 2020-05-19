@@ -10,6 +10,7 @@ import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 
 /**
  * 消息发送者
+ *
  * @author IMNOTHD
  * @date 2020/5/5 0:34
  */

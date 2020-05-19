@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * RabbitMQ配置类
+ *
  * @author IMNOTHD
  * @date 2020/5/3 19:02
  */

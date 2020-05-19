@@ -11,11 +11,15 @@ services:
     restart: always
     depends_on:
       - rabbitmq
-    networks: # 网络 连接rabbitmq
+    networks: # 网络 连接rabbitmq, redis
       - backend
     external_links:
       - rabbitmq:rabbitmq
-
+      - redis:redis
+    volumes:
+      - /mydata/app-qunicy/log:/var/logs # 日志文件挂载
+    environment:
+      - TZ=Asia/Shanghai # 保证时区一致
   rabbitmq:
     image: rabbitmq:3.8.3-management
     container_name: rabbitmq-quincy
@@ -30,6 +34,24 @@ services:
         max-file: "10"
     networks:
       - backend
+    volumes:
+      - /mydata/rabbitmq/data:/var/lib/rabbitmq # 数据文件挂载
+      - /mydata/rabbitmq/log:/var/log/rabbitmq # 日志文件挂载
+    environment:
+      - TZ=Asia/Shanghai
+  redis:
+    image: redis:6.0.2
+    container_name: redis-quincy
+    restart: always
+    command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
+    networks:
+      - backend
+    volumes:
+      - /mydata/redis/data:/data #数据文件挂载
+    environment:
+      - TZ=Asia/Shanghai
 
 volumes:
   db-data:

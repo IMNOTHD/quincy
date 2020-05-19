@@ -1,3 +1,8 @@
 spring:
   profiles:
-    active: prod
+    active: dev
+
+mirai:
+  http:
+    authKey: Usjwus927eS@$jswZ
+    qq: 747460961
