@@ -1,6 +1,5 @@
 package com.piggy.quincy.component;
 
-import com.piggy.quincy.config.BotConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -11,19 +10,19 @@ import org.springframework.stereotype.Component;
 import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 
 /**
- * 消息的处理者
+ * 消息处理
  *
  * @author IMNOTHD
  * @date 2020/5/5 0:35
  */
 @Component
-@RabbitListener(queues = QUEUE_NAME, concurrency = "50")
-public class MessageReceiver {
+@RabbitListener(queues = QUEUE_NAME, concurrency = "25")
+public class MessageHandler {
     @Autowired
-    private static Logger logger = LoggerFactory.getLogger(MessageSender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
 
     @RabbitHandler
     public void messageHandle(String message) throws InterruptedException {
-        logger.info("handle message: {}", message);
+        LOGGER.info("handle message: {}", message);
     }
 }

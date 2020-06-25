@@ -19,10 +19,10 @@ public class MessageSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
-    private static Logger logger = LoggerFactory.getLogger(MessageSender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
 
     public void sendMessage(String message) {
         rabbitTemplate.convertAndSend(QUEUE_NAME, message);
-        logger.info("receive message: {}", message);
+        LOGGER.info("receive message: {}", message);
     }
 }
