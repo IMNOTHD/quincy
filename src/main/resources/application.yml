@@ -4,5 +4,6 @@ spring:
 
 mirai:
   http:
-    authKey: Usjwus927eS@$jswZ
+    authKey: Usjwus927sS@$jswZ
     qq: 747460961
+    api: http://tx.impiggy.cn:12345
