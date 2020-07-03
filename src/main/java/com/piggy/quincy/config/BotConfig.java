@@ -17,4 +17,8 @@ public class BotConfig {
     @Value("${mirai.http.qq}")
     @Getter
     private Long qq;
+
+    @Value("${mirai.http.api}")
+    @Getter
+    private String apiUrl;
 }
