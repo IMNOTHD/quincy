@@ -38,7 +38,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void friendMessage(JSONObject jsonObject) {
-
+        String key = redisDatabase + ":sessionKey";
+        try {
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<String>(){{
+                add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
+            }});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
