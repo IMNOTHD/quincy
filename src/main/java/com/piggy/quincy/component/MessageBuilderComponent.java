@@ -16,13 +16,13 @@ public class MessageBuilderComponent {
      * @param time 时间戳
      * @return message
      */
-    public static String source(int id, int time) {
+    public static JSONObject source(int id, int time) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Source");
         jsonObject.put("id", id);
         jsonObject.put("time", time);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -35,7 +35,7 @@ public class MessageBuilderComponent {
      * @param origin   被引用回复的原消息的消息链对象
      * @return message
      */
-    public static String quote(int id, Long groupId, Long senderId, Long targetId, Object origin) {
+    public static JSONObject quote(int id, Long groupId, Long senderId, Long targetId, Object origin) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Quote");
         jsonObject.put("id", id);
@@ -44,7 +44,7 @@ public class MessageBuilderComponent {
         jsonObject.put("targetId", targetId);
         jsonObject.put("origin", origin);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -54,13 +54,13 @@ public class MessageBuilderComponent {
      * @param display At时显示的文字，发送消息时无效，自动使用群名片
      * @return message
      */
-    public static String at(Long target, String display) {
+    public static JSONObject at(Long target, String display) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "At");
         jsonObject.put("target", target);
         jsonObject.put("display", display);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -68,11 +68,11 @@ public class MessageBuilderComponent {
      *
      * @return message
      */
-    public static String atAll() {
+    public static JSONObject atAll() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "AtAll");
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -82,13 +82,13 @@ public class MessageBuilderComponent {
      * @param name   QQ表情拼音，可选
      * @return message
      */
-    public static String face(int faceId, String name) {
+    public static JSONObject face(int faceId, String name) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Face");
         jsonObject.put("faceId", faceId);
         jsonObject.put("name", name);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -97,12 +97,12 @@ public class MessageBuilderComponent {
      * @param text 文字消息
      * @return message
      */
-    public static String plain(String text) {
+    public static JSONObject plain(String text) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Plain");
         jsonObject.put("text", text);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -115,14 +115,14 @@ public class MessageBuilderComponent {
      * @param path    图片的路径，发送本地图片，相对路径于plugins/MiraiAPIHTTP/images
      * @return message
      */
-    public static String image(String imageId, String url, String path) {
+    public static JSONObject image(String imageId, String url, String path) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Image");
         jsonObject.put("imageId", imageId);
         jsonObject.put("url", url);
         jsonObject.put("path", path);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -135,14 +135,14 @@ public class MessageBuilderComponent {
      * @param path    图片的路径，发送本地图片，相对路径于plugins/MiraiAPIHTTP/images
      * @return message
      */
-    public static String flashImage(String imageId, String url, String path) {
+    public static JSONObject flashImage(String imageId, String url, String path) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "FlashImage");
         jsonObject.put("imageId", imageId);
         jsonObject.put("url", url);
         jsonObject.put("path", path);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -150,12 +150,12 @@ public class MessageBuilderComponent {
      * @param xml XML文本
      * @return message
      */
-    public static String xml(String xml) {
+    public static JSONObject xml(String xml) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Xml");
         jsonObject.put("xml", xml);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -163,12 +163,12 @@ public class MessageBuilderComponent {
      * @param json Json文本
      * @return messsage
      */
-    public static String json(String json) {
+    public static JSONObject json(String json) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Json");
         jsonObject.put("json", json);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -176,12 +176,12 @@ public class MessageBuilderComponent {
      * @param content 内容
      * @return message
      */
-    public static String app(String content) {
+    public static JSONObject app(String content) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "App");
         jsonObject.put("content", content);
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -189,12 +189,12 @@ public class MessageBuilderComponent {
      * @param name 戳一戳的类型
      * @return message
      */
-    public static String poke(Poke name) {
+    public static JSONObject poke(Poke name) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "Poke");
         jsonObject.put("name", name.getName());
 
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**

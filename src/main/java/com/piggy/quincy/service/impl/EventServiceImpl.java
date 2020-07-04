@@ -40,7 +40,7 @@ public class EventServiceImpl implements EventService {
     public void friendMessage(JSONObject jsonObject) {
         String key = redisDatabase + ":sessionKey";
         try {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<String>(){{
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
                 add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
             }});
         } catch (IOException e) {
@@ -52,7 +52,7 @@ public class EventServiceImpl implements EventService {
     public void tempMessage(JSONObject jsonObject) {
         String key = redisDatabase + ":sessionKey";
         try {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<String>(){{
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
                 add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
             }});
         } catch (IOException e) {

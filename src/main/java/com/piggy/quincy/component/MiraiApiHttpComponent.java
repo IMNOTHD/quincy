@@ -128,7 +128,7 @@ public class MiraiApiHttpComponent {
      * @return Response
      * @throws IOException
      */
-    public Response sendFriendMessage(String sessionKey, Long target, Long qq, Integer quote, List<String> messageChain) throws IOException {
+    public Response sendFriendMessage(String sessionKey, Long target, Long qq, Integer quote, List<JSONObject> messageChain) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
@@ -157,7 +157,7 @@ public class MiraiApiHttpComponent {
      * @return Response
      * @throws IOException
      */
-    public Response sendTempMessage(String sessionKey, Long qq, Long group, Integer quote, List<String> messageChain) throws IOException {
+    public Response sendTempMessage(String sessionKey, Long qq, Long group, Integer quote, List<JSONObject> messageChain) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("qq", qq);
@@ -186,7 +186,7 @@ public class MiraiApiHttpComponent {
      * @return Response
      * @throws IOException
      */
-    public Response sendGroupMessage(String sessionKey, Long target, Long group, Integer quote, List<String> messageChain) throws IOException {
+    public Response sendGroupMessage(String sessionKey, Long target, Long group, Integer quote, List<JSONObject> messageChain) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
