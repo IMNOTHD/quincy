@@ -1,14 +1,19 @@
 package com.piggy.quincy.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.piggy.quincy.component.MessageBuilderComponent;
 import com.piggy.quincy.component.MiraiApiHttpComponent;
+import com.piggy.quincy.config.BotConfig;
 import com.piggy.quincy.service.EventService;
 import com.piggy.quincy.service.RedisService;
-import lombok.SneakyThrows;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author IMNOTHD
@@ -20,6 +25,11 @@ public class EventServiceImpl implements EventService {
     private RedisService redisService;
     @Autowired
     private MiraiApiHttpComponent miraiApiHttpComponent;
+    @Autowired
+    private BotConfig botConfig;
+    @Value("${redis.database}")
+    private String redisDatabase;
+
 
     @Override
     public void groupMessage(JSONObject jsonObject) {
@@ -33,7 +43,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void tempMessage(JSONObject jsonObject) {
-
+        String key = redisDatabase + ":sessionKey";
+        try {
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<String>(){{
+                add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
+            }});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

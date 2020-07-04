@@ -7,3 +7,8 @@ mirai:
     authKey: Usjwus927sS@$jswZ
     qq: 747460961
     api: http://tx.impiggy.cn:12345
+
+redis:
+  database: 'quincy'
+  expire:
+    common: 2592000 # 默认30d超时

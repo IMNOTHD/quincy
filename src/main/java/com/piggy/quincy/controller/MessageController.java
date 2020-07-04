@@ -1,7 +1,6 @@
 package com.piggy.quincy.controller;
 
 import com.piggy.quincy.common.CommonResult;
-import com.piggy.quincy.component.MessageSender;
 import com.piggy.quincy.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
