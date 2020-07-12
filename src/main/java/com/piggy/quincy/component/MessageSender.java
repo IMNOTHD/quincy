@@ -18,7 +18,7 @@ import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 public class MessageSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    @Autowired
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
 
     public void sendMessage(String message) {

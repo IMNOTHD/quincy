@@ -147,6 +147,7 @@ public class MessageBuilderComponent {
 
     /**
      * Xml
+     *
      * @param xml XML文本
      * @return message
      */
@@ -160,6 +161,7 @@ public class MessageBuilderComponent {
 
     /**
      * Json
+     *
      * @param json Json文本
      * @return messsage
      */
@@ -173,6 +175,7 @@ public class MessageBuilderComponent {
 
     /**
      * App
+     *
      * @param content 内容
      * @return message
      */
@@ -186,6 +189,7 @@ public class MessageBuilderComponent {
 
     /**
      * Poke
+     *
      * @param name 戳一戳的类型
      * @return message
      */
@@ -215,6 +219,7 @@ public class MessageBuilderComponent {
         FANG_DA_ZHAO("FangDaZhao");
 
         private String name;
+
         private Poke(String name) {
             this.name = name;
         }

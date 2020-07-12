@@ -26,8 +26,8 @@ import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 @Component
 @RabbitListener(queues = QUEUE_NAME, concurrency = "64")
 public class MessageHandler {
-    @Autowired
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
     @Autowired
     private EventService eventService;
 
@@ -67,7 +67,7 @@ public class MessageHandler {
         executorService.execute(futureTask);
 
         try {
-            // 单个线程设置5分钟超时, 超时则打断
+            // 单个线程设置5分钟超时, 超时则中断
             String result = futureTask.get(5, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
             LOGGER.info("Handle Time Out: {}", message);

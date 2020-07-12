@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,8 +31,8 @@ public class MiraiApiHttpComponent {
     private static final MediaType FORM_DATA = MediaType.parse("multipart/form-data");
     @Autowired
     private BotConfig botConfig;
-    @Autowired
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MiraiApiHttpComponent.class);
 
     /**
      * 获取插件信息
@@ -209,10 +208,10 @@ public class MiraiApiHttpComponent {
      * 使用此方法向指定对象（群或好友）发送图片消息 除非需要通过此手段获取imageId，否则不推荐使用该接口
      *
      * @param sessionKey 已经激活的Session
-     * @param target 发送对象的QQ号或群号，可能存在歧义
-     * @param qq 发送对象的QQ号
-     * @param group 发送对象的群号
-     * @param urls 是一个url字符串构成的数组
+     * @param target     发送对象的QQ号或群号，可能存在歧义
+     * @param qq         发送对象的QQ号
+     * @param group      发送对象的群号
+     * @param urls       是一个url字符串构成的数组
      * @return Response
      * @throws IOException
      */
@@ -236,9 +235,10 @@ public class MiraiApiHttpComponent {
 
     /**
      * 图片文件上传
+     *
      * @param sessionKey 已经激活的Session
-     * @param type "friend" 或 "group" 或 "temp"
-     * @param img 图片文件
+     * @param type       "friend" 或 "group" 或 "temp"
+     * @param img        图片文件
      * @return Response
      * @throws IOException
      */
@@ -263,8 +263,9 @@ public class MiraiApiHttpComponent {
 
     /**
      * 撤回消息
+     *
      * @param sessionKey 已经激活的Session
-     * @param target 需要撤回的消息的messageId
+     * @param target     需要撤回的消息的messageId
      * @return Response
      * @throws IOException
      */
@@ -284,6 +285,99 @@ public class MiraiApiHttpComponent {
     }
 
     /**
+     * 响应 -> 添加好友申请
+     *
+     * @param sessionKey session key
+     * @param eventId    响应申请事件的标识
+     * @param fromId     事件对应申请人QQ号
+     * @param groupId    事件对应申请人的群号，可能为0
+     * @param operate    响应的操作类型
+     * @param message    回复的信息
+     * @return Response
+     * @throws IOException
+     */
+    public Response respNewFriendRequestEvent(String sessionKey, Long eventId, Long fromId, Long groupId, FriendRequestOperate operate, String message) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("eventId", eventId);
+        jsonObject.put("fromId", fromId);
+        jsonObject.put("groupId", groupId);
+        jsonObject.put("operate", operate.getOperate());
+        jsonObject.put("message", message);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/resp/memberJoinRequestEvent")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 响应 -> 用户入群申请（Bot需要有管理员权限）
+     *
+     * @param sessionKey session key
+     * @param eventId    响应申请事件的标识
+     * @param fromId     事件对应申请人QQ号
+     * @param groupId    事件对应申请人的群号
+     * @param operate    响应的操作类型
+     * @param message    回复的信息
+     * @return Response
+     * @throws IOException
+     */
+    public Response respMemberJoinRequestEvent(String sessionKey, Long eventId, Long fromId, Long groupId, MemberJoinRequestOperate operate, String message) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("eventId", eventId);
+        jsonObject.put("fromId", fromId);
+        jsonObject.put("groupId", groupId);
+        jsonObject.put("operate", operate.getOperate());
+        jsonObject.put("message", message);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/resp/memberJoinRequestEvent")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 响应 -> Bot被邀请入群申请
+     *
+     * @param sessionKey session key
+     * @param eventId    响应申请事件的标识
+     * @param fromId     事件对应申请人QQ号
+     * @param groupId    事件对应申请人的群号
+     * @param operate    响应的操作类型
+     * @param message    回复的信息
+     * @return Response
+     * @throws IOException
+     */
+    public Response respBotInvitedJoinGroupRequestEvent(String sessionKey, Long eventId, Long fromId, Long groupId, BotInvitedJoinGroupRequestOperate operate, String message) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("eventId", eventId);
+        jsonObject.put("fromId", fromId);
+        jsonObject.put("groupId", groupId);
+        jsonObject.put("operate", operate.getOperate());
+        jsonObject.put("message", message);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/resp/botInvitedJoinGroupRequestEvent")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
      * 图片接受者类型
      */
     public enum ImageType {
@@ -293,12 +387,74 @@ public class MiraiApiHttpComponent {
         TEMP("temp");
 
         private String type;
+
         private ImageType(String type) {
             this.type = type;
         }
 
         public String getType() {
             return type;
+        }
+    }
+
+    /**
+     * 好友申请同意类型
+     */
+    public enum FriendRequestOperate {
+        // 好友申请同意类型
+        ACCEPT(0),
+        REJECT(1),
+        REJECT_AND_BLOCK(2);
+
+        private Integer operate;
+
+        private FriendRequestOperate(Integer operate) {
+            this.operate = operate;
+        }
+
+        public Integer getOperate() {
+            return operate;
+        }
+    }
+
+    /**
+     * 用户入群申请同意类型
+     */
+    public enum MemberJoinRequestOperate {
+        // 用户入群申请同意类型
+        ACCEPT(0),
+        REJECT(1),
+        IGNORE(2),
+        REJECT_AND_BLOCK(3),
+        IGNORE_AND_BLOCK(4);
+
+        private Integer operate;
+
+        private MemberJoinRequestOperate(Integer operate) {
+            this.operate = operate;
+        }
+
+        public Integer getOperate() {
+            return operate;
+        }
+    }
+
+    /**
+     * 用户入群申请同意类型
+     */
+    public enum BotInvitedJoinGroupRequestOperate {
+        // 用户入群申请同意类型
+        ACCEPT(0),
+        REJECT(1);
+
+        private Integer operate;
+
+        private BotInvitedJoinGroupRequestOperate(Integer operate) {
+            this.operate = operate;
+        }
+
+        public Integer getOperate() {
+            return operate;
         }
     }
 }

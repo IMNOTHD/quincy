@@ -2,6 +2,8 @@ package com.piggy.quincy.service;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.IOException;
+
 /**
  * @author IMNOTHD
  * @date 2020/7/3 17:16
@@ -20,14 +22,14 @@ public interface EventService {
      *
      * @param jsonObject 参数
      */
-    void friendMessage(JSONObject jsonObject);
+    void friendMessage(JSONObject jsonObject) throws IOException;
 
     /**
      * 临时消息
      *
      * @param jsonObject 参数
      */
-    void tempMessage(JSONObject jsonObject);
+    void tempMessage(JSONObject jsonObject) throws IOException;
 
     /**
      * Bot登录成功

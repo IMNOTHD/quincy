@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class TaskComponent {
-    @Autowired
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskComponent.class);
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -31,14 +31,12 @@ public class TaskComponent {
     private BotConfig botConfig;
     @Value("${redis.database}")
     private String redisDatabase;
-    @Value("${redis.expire.common}")
-    private Long redisExpire;
 
     /**
      * 每28分钟刷新一次Session, 启动后立即刷新
      */
     @Scheduled(fixedRate = 1000 * 60 * 28)
-    private void refreshSession() throws IOException {
+    public void refreshSession() throws IOException {
         Response authResponse = miraiApiHttpComponent.auth(botConfig.getAuthKey());
         JSONObject jsonObject = (JSONObject) JSON.parse(authResponse.body().string());
         if (jsonObject.getInteger("code") != 0) {
@@ -60,5 +58,13 @@ public class TaskComponent {
         String key = redisDatabase + ":sessionKey";
         redisService.set(key, sessionKey);
         LOGGER.info("Session Refreshed: {}", sessionKey);
+    }
+
+    /**
+     * 每5分钟执行一次的普通任务
+     */
+    @Scheduled(fixedRate = 1000 * 60 * 5)
+    private void commonTask() {
+
     }
 }
