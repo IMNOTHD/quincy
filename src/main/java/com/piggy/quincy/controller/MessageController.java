@@ -36,7 +36,7 @@ public class MessageController {
     @ResponseBody
     public CommonResult<String> send(@RequestBody String message, HttpServletRequest httpServletRequest) {
         String authorization = httpServletRequest.getHeader("Authorization");
-        if (authorization == null || authorization.equals(botConfig.getAuthKey())) {
+        if (authorization == null || !authorization.equals(botConfig.getAuthKey())) {
             return CommonResult.forbidden();
         }
 
