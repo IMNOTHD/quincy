@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球，但是幸运的被赦免了", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
                 }});
             } else {
-                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
@@ -94,7 +94,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
                 }});
             } else {
-                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
@@ -105,7 +105,7 @@ public class EventServiceImpl implements EventService {
 
         // 8小时精致睡眠
         if (commonUtilComponent.hasMessage(messageChain, "sleep")) {
-            miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
+            // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
 
             commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.at(senderQQ));
