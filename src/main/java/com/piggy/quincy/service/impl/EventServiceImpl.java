@@ -67,23 +67,6 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球", randomBanTime)));
                 }});
             }
-        } else if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
-            // 普通的口球, 时长为[1, 60)分钟
-            int randomBanTime = (int) (Math.random() * 60 + 1);
-
-            if (commonUtilComponent.isUnban()) {
-                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
-                    add(MessageBuilderComponent.at(senderQQ));
-                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
-                }});
-            } else {
-                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
-
-                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
-                    add(MessageBuilderComponent.at(senderQQ));
-                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球", randomBanTime)));
-                }});
-            }
         } else if (commonUtilComponent.hasMessage(messageChain, "大口球抽奖")) {
             // 巨大的口球, 时长为[1分钟, 30天)
             int randomBanTime = (int) (Math.random() * 43199 + 1);
@@ -94,18 +77,35 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球，但是幸运的被赦免了", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
                 }});
             } else {
-                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
                     add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
                 }});
             }
+        } else if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
+            // 普通的口球, 时长为[1, 60)分钟
+            int randomBanTime = (int) (Math.random() * 60 + 1);
+
+            if (commonUtilComponent.isUnban()) {
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
+                }});
+            } else {
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球", randomBanTime)));
+                }});
+            }
         }
 
         // 8小时精致睡眠
         if (commonUtilComponent.hasMessage(messageChain, "sleep")) {
-            // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
+            miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
 
             commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.at(senderQQ));
