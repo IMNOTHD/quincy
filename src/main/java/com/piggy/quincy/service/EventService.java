@@ -15,7 +15,7 @@ public interface EventService {
      *
      * @param jsonObject 参数
      */
-    void groupMessage(JSONObject jsonObject);
+    void groupMessage(JSONObject jsonObject) throws IOException;
 
     /**
      * 好友消息

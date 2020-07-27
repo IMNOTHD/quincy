@@ -378,6 +378,366 @@ public class MiraiApiHttpComponent {
     }
 
     /**
+     * 获取bot的好友列表
+     *
+     * @param sessionKey session key
+     * @return Response
+     * @throws IOException
+     */
+    public Response friendList(String sessionKey) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/friendList?sessionKey=%s", sessionKey))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取bot的群列表
+     *
+     * @param sessionKey session key
+     * @return Response
+     * @throws IOException
+     */
+    public Response groupList(String sessionKey) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/groupList?sessionKey=%s", sessionKey))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取bot指定群种的成员列表
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return Response
+     * @throws IOException
+     */
+    public Response memberList(String sessionKey, Long target) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/groupList?sessionKey=%s&target=%d", sessionKey, target))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 令指定群进行全体禁言（需要有相关限权）
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return Response
+     * @throws IOException
+     */
+    public Response muteAll(String sessionKey, Long target) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/muteAll")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 令指定群解除全体禁言（需要有相关限权）
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return Response
+     * @throws IOException
+     */
+    public Response unmuteAll(String sessionKey, Long target) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/unmuteAll")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 指定群禁言指定群员（需要有相关限权）
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @param memberId   指定群员QQ号
+     * @param time       禁言时长，单位为秒，最多30天，默认为0
+     * @return Response
+     * @throws IOException
+     */
+    public Response mute(String sessionKey, Long target, Long memberId, Integer time) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+        jsonObject.put("memberId", memberId);
+        jsonObject.put("time", time);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/mute")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 令指定群解除全体禁言（需要有相关限权）
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @param memberId   指定群员QQ号
+     * @return Response
+     * @throws IOException
+     */
+    public Response unmute(String sessionKey, Long target, Long memberId) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+        jsonObject.put("memberId", memberId);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/unmute")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 移除指定群成员（需要有相关限权）
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @param memberId   指定群员QQ号
+     * @param msg        信息
+     * @return Response
+     * @throws IOException
+     */
+    public Response kick(String sessionKey, Long target, Long memberId, String msg) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+        jsonObject.put("memberId", memberId);
+        jsonObject.put("msg", msg);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/kick")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 使Bot退出群聊
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return
+     * @throws IOException
+     */
+    public Response quit(String sessionKey, Long target) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/quit")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 修改群设置（需要有相关限权）
+     *
+     * @param sessionKey        session key
+     * @param target            指定群的群号
+     * @param name              群名
+     * @param announcement      群公告
+     * @param confessTalk       是否开启坦白说
+     * @param allowMemberInvite 是否运行群员邀请
+     * @param autoApprove       是否开启自动审批入群
+     * @param anonymousChat     是否允许匿名聊天
+     * @return Response
+     * @throws IOException
+     */
+    public Response groupConfig(String sessionKey, Long target, String name, boolean announcement, boolean confessTalk, boolean allowMemberInvite, boolean autoApprove, boolean anonymousChat) throws IOException {
+        JSONObject config = new JSONObject();
+        config.put("name", name);
+        config.put("announcement", announcement);
+        config.put("confessTalk", confessTalk);
+        config.put("allowMemberInvite", allowMemberInvite);
+        config.put("autoApprove", autoApprove);
+        config.put("anonymousChat", anonymousChat);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+        jsonObject.put("config", config);
+
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/groupConfig")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取群设置
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return Response
+     * @throws IOException
+     */
+    public Response groupConfig(String sessionKey, Long target) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/groupConfig?sessionKey=%s&target=%d", sessionKey, target))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 修改群员资料（需要有相关限权）
+     *
+     * @param sessionKey   session key
+     * @param target       指定群的群号
+     * @param memberId     群员QQ号
+     * @param name         群名片，即群昵称
+     * @param specialTitle 群头衔
+     * @return Response
+     * @throws IOException
+     */
+    public Response memberInfo(String sessionKey, Long target, Long memberId, String name, String specialTitle) throws IOException {
+        JSONObject info = new JSONObject();
+        info.put("name", name);
+        info.put("specialTitle", specialTitle);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("target", target);
+        jsonObject.put("memberId", memberId);
+        jsonObject.put("info", info);
+
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/memberInfo")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取群员资料
+     *
+     * @param sessionKey session key
+     * @param target     指定群的群号
+     * @return Response
+     * @throws IOException
+     */
+    public Response memberInfo(String sessionKey, Long target, Long memberId) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/memberInfo?sessionKey=%s&target=%d&memberId=%s", sessionKey, target, memberId))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取指定Session的配置信息，注意该配置是Session范围有效
+     *
+     * @param sessionKey session key
+     * @return Response
+     * @throws IOException
+     */
+    public Response config(String sessionKey) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/config?sessionKey=%s", sessionKey))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 设置指定Session的配置信息，注意该配置是Session范围有效
+     *
+     * @param sessionKey      session key
+     * @param cacheSize       缓存大小
+     * @param enableWebsocket 是否开启Websocket
+     * @return Response
+     * @throws IOException
+     */
+    public Response config(String sessionKey, int cacheSize, boolean enableWebsocket) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionKey", sessionKey);
+        jsonObject.put("cacheSize", cacheSize);
+        jsonObject.put("enableWebsocket", enableWebsocket);
+
+        RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
+
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + "/config")
+                .post(requestBody)
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * 获取Mangers
+     *
+     * @param qq qq
+     * @return Response
+     * @throws IOException
+     */
+    public Response managers(String qq) throws IOException {
+        Request request = new Request.Builder()
+                .url(botConfig.getApiUrl() + String.format("/managers?qq=%s", qq))
+                .get()
+                .build();
+
+        return okHttpClient.newCall(request).execute();
+    }
+
+    /**
      * 图片接受者类型
      */
     public enum ImageType {

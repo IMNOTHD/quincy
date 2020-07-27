@@ -65,6 +65,9 @@ public class TaskComponent {
      */
     @Scheduled(fixedRate = 1000 * 60 * 5)
     private void commonTask() {
-
+        // 赦免概率, 存入的是乘100后的概率, 避免精度问题
+        int unbanProbability = (int) Math.floor(Math.random() * botConfig.getRandomUnbanProbabilityLimit() * 100);
+        String unbanProbabilityKey = redisDatabase + ":unbanProbability";
+        redisService.set(unbanProbabilityKey, String.valueOf(unbanProbability));
     }
 }

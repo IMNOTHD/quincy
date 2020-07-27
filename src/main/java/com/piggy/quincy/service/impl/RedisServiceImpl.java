@@ -169,27 +169,32 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public Long listPush(String key, Object value) {
+    public Long listRightPush(String key, Object value) {
         return redisTemplate.opsForList().rightPush(key, value);
     }
 
     @Override
-    public Long listPush(String key, Object value, long time) {
+    public Long listRightPush(String key, Object value, long time) {
         Long index = redisTemplate.opsForList().rightPush(key, value);
         expire(key, time);
         return index;
     }
 
     @Override
-    public Long listPushAll(String key, Object... values) {
+    public Long listRightPushAll(String key, Object... values) {
         return redisTemplate.opsForList().rightPushAll(key, values);
     }
 
     @Override
-    public Long listPushAll(String key, Long time, Object... values) {
+    public Long listRightPushAll(String key, Long time, Object... values) {
         Long count = redisTemplate.opsForList().rightPushAll(key, values);
         expire(key, time);
         return count;
+    }
+
+    @Override
+    public Object listRightPop(String key) {
+        return redisTemplate.opsForList().rightPop(key);
     }
 
     @Override

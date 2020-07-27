@@ -159,22 +159,27 @@ public interface RedisService {
     /**
      * 向List结构中添加属性
      */
-    Long listPush(String key, Object value);
+    Long listRightPush(String key, Object value);
 
     /**
      * 向List结构中添加属性
      */
-    Long listPush(String key, Object value, long time);
+    Long listRightPush(String key, Object value, long time);
 
     /**
      * 向List结构中批量添加属性
      */
-    Long listPushAll(String key, Object... values);
+    Long listRightPushAll(String key, Object... values);
 
     /**
      * 向List结构中批量添加属性
      */
-    Long listPushAll(String key, Long time, Object... values);
+    Long listRightPushAll(String key, Long time, Object... values);
+
+    /**
+     * 弹出list右侧元素
+     */
+    Object listRightPop(String key);
 
     /**
      * 从List结构中移除属性

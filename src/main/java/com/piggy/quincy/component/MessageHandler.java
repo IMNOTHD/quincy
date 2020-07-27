@@ -28,6 +28,7 @@ import static com.piggy.quincy.config.RabbitMQConfig.QUEUE_NAME;
 public class MessageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
+
     @Autowired
     private EventService eventService;
 

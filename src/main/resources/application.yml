@@ -12,3 +12,7 @@ redis:
   database: 'quincy'
   expire:
     common: 2592000 # 默认30d超时
+
+bot:
+  config:
+    random-unban-probability-limit: 50 # 赦免概率上限, [0,100)浮点数

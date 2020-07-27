@@ -3,7 +3,7 @@ package com.piggy.quincy.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.piggy.quincy.component.MessageBuilderComponent;
-import com.piggy.quincy.component.MessageCheckerComponent;
+import com.piggy.quincy.component.CommonUtilComponent;
 import com.piggy.quincy.component.MiraiApiHttpComponent;
 import com.piggy.quincy.component.TaskComponent;
 import com.piggy.quincy.config.BotConfig;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 严禁修改方法名, 否则会导致反射失效
@@ -32,27 +33,103 @@ public class EventServiceImpl implements EventService {
     private BotConfig botConfig;
     @Autowired
     private TaskComponent taskComponent;
+    @Autowired
+    private CommonUtilComponent commonUtilComponent;
     @Value("${redis.database}")
     private String redisDatabase;
+    @Value("${redis.database}:sessionKey")
+    private String redisSessionKey;
 
 
     @Override
-    public void groupMessage(JSONObject jsonObject) {
+    public void groupMessage(JSONObject jsonObject) throws IOException {
+        List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
+        Long group = ((JSONObject) ((JSONObject) jsonObject.get("sender")).get("group")).getLong("id");
+        Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("group");
 
+        String sessionKey = redisService.get(redisSessionKey).toString();
+
+        // 迷你的口球, 时长为[1, 60)秒
+        if (commonUtilComponent.hasMessage(messageChain, "小口球抽奖")) {
+            int randomBanTime = (int) (Math.random() * 60 + 1);
+
+            if (commonUtilComponent.isUnban()) {
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球，但是幸运的被赦免了", randomBanTime)));
+                }});
+            } else {
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime);
+
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球", randomBanTime)));
+                }});
+            }
+        }
+
+        // 普通的口球, 时长为[1, 60)分钟
+        if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
+            int randomBanTime = (int) (Math.random() * 60 + 1);
+
+            if (commonUtilComponent.isUnban()) {
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
+                }});
+            } else {
+                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球", randomBanTime)));
+                }});
+            }
+        }
+
+        // 巨大的口球, 时长为[1分钟, 30天)
+        if (commonUtilComponent.hasMessage(messageChain, "大口球抽奖")) {
+            int randomBanTime = (int) (Math.random() * 43199 + 1);
+
+            if (commonUtilComponent.isUnban()) {
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球，但是幸运的被赦免了", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
+                }});
+            } else {
+                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
+                }});
+            }
+        }
+
+        // 8小时精致睡眠
+        if (commonUtilComponent.hasMessage(messageChain, "sleep")) {
+                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
+
+                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                    add(MessageBuilderComponent.at(senderQQ));
+                    add(MessageBuilderComponent.plain("晚安"));
+                }});
+        }
     }
 
     @Override
     public void friendMessage(JSONObject jsonObject) throws IOException {
-        String key = redisDatabase + ":sessionKey";
-        if (MessageCheckerComponent.hasMessage(JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class), "解除口球")) {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
+        List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
+
+        if (commonUtilComponent.hasMessage(messageChain, "解除口球")) {
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain("Working on it!"));
             }});
         }
 
 
         try {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
             }});
         } catch (IOException e) {
@@ -62,15 +139,16 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void tempMessage(JSONObject jsonObject) throws IOException {
-        String key = redisDatabase + ":sessionKey";
-        if (MessageCheckerComponent.hasMessage(JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class), "解除口球")) {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
+        List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
+
+        if (commonUtilComponent.hasMessage(messageChain, "解除口球")) {
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain("Working on it!"));
             }});
         }
 
         try {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(key).toString(), 1162719199L, null, null, new ArrayList<JSONObject>(){{
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain(jsonObject.getString("sender")));
             }});
         } catch (IOException e) {

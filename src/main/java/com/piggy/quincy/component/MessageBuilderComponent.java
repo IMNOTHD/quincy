@@ -51,14 +51,13 @@ public class MessageBuilderComponent {
      * At个人
      *
      * @param target  群员QQ号
-     * @param display At时显示的文字，发送消息时无效，自动使用群名片
      * @return message
      */
-    public static JSONObject at(Long target, String display) {
+    public static JSONObject at(Long target) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "At");
         jsonObject.put("target", target);
-        jsonObject.put("display", display);
+        jsonObject.put("display", "");
 
         return jsonObject;
     }

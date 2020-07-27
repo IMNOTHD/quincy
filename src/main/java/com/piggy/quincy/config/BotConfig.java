@@ -21,4 +21,8 @@ public class BotConfig {
     @Value("${mirai.http.api}")
     @Getter
     private String apiUrl;
+
+    @Value("${bot.config.random-unban-probability-limit}")
+    @Getter
+    private double randomUnbanProbabilityLimit;
 }
