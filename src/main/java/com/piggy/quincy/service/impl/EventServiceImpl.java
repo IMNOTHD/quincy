@@ -45,12 +45,13 @@ public class EventServiceImpl implements EventService {
     public void groupMessage(JSONObject jsonObject) throws IOException {
         List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
         Long group = ((JSONObject) ((JSONObject) jsonObject.get("sender")).get("group")).getLong("id");
-        Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("group");
+        Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("id");
 
         String sessionKey = redisService.get(redisSessionKey).toString();
 
-        // 迷你的口球, 时长为[1, 60)秒
+        // 抽取口球
         if (commonUtilComponent.hasMessage(messageChain, "小口球抽奖")) {
+            // 迷你的口球, 时长为[1, 60)秒
             int randomBanTime = (int) (Math.random() * 60 + 1);
 
             if (commonUtilComponent.isUnban()) {
@@ -66,10 +67,8 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球", randomBanTime)));
                 }});
             }
-        }
-
-        // 普通的口球, 时长为[1, 60)分钟
-        if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
+        } else if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
+            // 普通的口球, 时长为[1, 60)分钟
             int randomBanTime = (int) (Math.random() * 60 + 1);
 
             if (commonUtilComponent.isUnban()) {
@@ -85,10 +84,8 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球", randomBanTime)));
                 }});
             }
-        }
-
-        // 巨大的口球, 时长为[1分钟, 30天)
-        if (commonUtilComponent.hasMessage(messageChain, "大口球抽奖")) {
+        } else if (commonUtilComponent.hasMessage(messageChain, "大口球抽奖")) {
+            // 巨大的口球, 时长为[1分钟, 30天)
             int randomBanTime = (int) (Math.random() * 43199 + 1);
 
             if (commonUtilComponent.isUnban()) {
@@ -108,12 +105,12 @@ public class EventServiceImpl implements EventService {
 
         // 8小时精致睡眠
         if (commonUtilComponent.hasMessage(messageChain, "sleep")) {
-                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
+            // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
 
-                commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
-                    add(MessageBuilderComponent.at(senderQQ));
-                    add(MessageBuilderComponent.plain("晚安"));
-                }});
+            commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
+                add(MessageBuilderComponent.at(senderQQ));
+                add(MessageBuilderComponent.plain("晚安"));
+            }});
         }
     }
 
