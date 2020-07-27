@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.piggy.quincy.service.RedisService;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,12 +73,36 @@ public class CommonUtilComponent {
     }
 
     /**
+     * 检查是否完全相等某个单词
+     * @param jsonObjectList 消息链
+     * @param message 需要被检测的单词
+     * @return 检测结果
+     */
+    public boolean equalMessage(List<JSONObject> jsonObjectList, @NotNull String message) {
+        if (jsonObjectList.size() != 1) {
+            return false;
+        }
+
+        JSONObject jsonObject = jsonObjectList.get(0);
+
+        if ("Plain".equals(jsonObject.getString("type"))) {
+            String text = jsonObject.getString("text");
+
+            if (message.equals(text)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * 检查是否包含某个单词
      * @param jsonObjectList 消息链
      * @param message 需要被检测的单词
      * @return 检测结果
      */
-    public boolean hasMessage(List<JSONObject> jsonObjectList, String message) {
+    public boolean hasMessage(List<JSONObject> jsonObjectList, @NotNull String message) {
         for (JSONObject jsonObject : jsonObjectList) {
             if ("Plain".equals(jsonObject.getString("type"))) {
                 String text = jsonObject.getString("text");

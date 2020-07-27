@@ -50,7 +50,7 @@ public class EventServiceImpl implements EventService {
         String sessionKey = redisService.get(redisSessionKey).toString();
 
         // 抽取口球
-        if (commonUtilComponent.hasMessage(messageChain, "小口球抽奖")) {
+        if (commonUtilComponent.equalMessage(messageChain, "小口球抽奖")) {
             // 迷你的口球, 时长为[1, 60)秒
             int randomBanTime = (int) (Math.random() * 60 + 1);
 
@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球", randomBanTime)));
                 }});
             }
-        } else if (commonUtilComponent.hasMessage(messageChain, "大口球抽奖")) {
+        } else if (commonUtilComponent.equalMessage(messageChain, "大口球抽奖")) {
             // 巨大的口球, 时长为[1分钟, 30天)
             int randomBanTime = (int) (Math.random() * 43199 + 1);
 
@@ -84,7 +84,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
                 }});
             }
-        } else if (commonUtilComponent.hasMessage(messageChain, "口球抽奖")) {
+        } else if (commonUtilComponent.equalMessage(messageChain, "口球抽奖")) {
             // 普通的口球, 时长为[1, 60)分钟
             int randomBanTime = (int) (Math.random() * 60 + 1);
 
@@ -104,7 +104,7 @@ public class EventServiceImpl implements EventService {
         }
 
         // 8小时精致睡眠
-        if (commonUtilComponent.hasMessage(messageChain, "sleep")) {
+        if (commonUtilComponent.equalMessage(messageChain, "sleep")) {
             // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
 
             commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
@@ -117,9 +117,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public void friendMessage(JSONObject jsonObject) throws IOException {
         List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
+        Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("id");
 
-        if (commonUtilComponent.hasMessage(messageChain, "解除口球")) {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
+        if (commonUtilComponent.equalMessage(messageChain, "解除口球")) {
+            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), senderQQ, null, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain("Working on it!"));
             }});
         }
@@ -137,9 +138,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public void tempMessage(JSONObject jsonObject) throws IOException {
         List<JSONObject> messageChain = JSON.parseArray(jsonObject.getString("messageChain"), JSONObject.class);
+        Long group = ((JSONObject) ((JSONObject) jsonObject.get("sender")).get("group")).getLong("id");
+        Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("id");
 
         if (commonUtilComponent.hasMessage(messageChain, "解除口球")) {
-            miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), 1162719199L, null, null, new ArrayList<JSONObject>() {{
+            miraiApiHttpComponent.sendTempMessage(redisService.get(redisSessionKey).toString(), senderQQ, group, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.plain("Working on it!"));
             }});
         }
