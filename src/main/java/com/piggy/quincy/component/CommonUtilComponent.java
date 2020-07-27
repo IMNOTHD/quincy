@@ -79,11 +79,11 @@ public class CommonUtilComponent {
      * @return 检测结果
      */
     public boolean equalMessage(List<JSONObject> jsonObjectList, @NotNull String message) {
-        if (jsonObjectList.size() != 1) {
+        if (jsonObjectList.size() != 2) {
             return false;
         }
 
-        JSONObject jsonObject = jsonObjectList.get(0);
+        JSONObject jsonObject = jsonObjectList.get(1);
 
         if ("Plain".equals(jsonObject.getString("type"))) {
             String text = jsonObject.getString("text");
