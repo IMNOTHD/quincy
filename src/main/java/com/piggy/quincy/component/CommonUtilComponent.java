@@ -88,9 +88,7 @@ public class CommonUtilComponent {
         if ("Plain".equals(jsonObject.getString("type"))) {
             String text = jsonObject.getString("text");
 
-            if (message.equals(text)) {
-                return true;
-            }
+            return message.equals(text);
         }
 
         return false;

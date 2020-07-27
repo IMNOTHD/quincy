@@ -112,6 +112,14 @@ public class EventServiceImpl implements EventService {
                 add(MessageBuilderComponent.plain("晚安"));
             }});
         }
+
+        // 赦免概率
+        if (commonUtilComponent.equalMessage(messageChain, "赦免概率")) {
+            commonUtilComponent.sendGroupMessage(group,  null, new ArrayList<JSONObject>(){{
+                add(MessageBuilderComponent.at(senderQQ));
+                add(MessageBuilderComponent.plain(String.format("当前赦免概率为：%.2f", commonUtilComponent.getUnbanProbability())));
+            }});
+        }
     }
 
     @Override
