@@ -58,14 +58,14 @@ public class EventServiceImpl implements EventService {
             if (commonUtilComponent.isUnban()) {
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
-                    add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球，但是幸运的被赦免了", randomBanTime)));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
                 }});
             } else {
                 miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
-                    add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球", randomBanTime)));
+                    add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球", randomBanTime)));
                 }});
             }
         } else if (commonUtilComponent.equalMessage(messageChain, "大口球抽奖")) {

@@ -53,7 +53,20 @@ public class CommonUtilComponent {
             return;
         }
 
+        double unbanProbability = this.getUnbanProbability() / 2;
+        double randomNum = Math.random() * 100;
+
+        if (randomNum > unbanProbability) {
+            miraiApiHttpComponent.sendTempMessage(sessionKey, qq, fromGroup, null, new ArrayList<JSONObject>(){{
+                add(MessageBuilderComponent.plain("解除失败，请再试一次"));
+            }});
+            return;
+        }
+
         Response response = miraiApiHttpComponent.mute(sessionKey, fromGroup, qq, 0);
+        miraiApiHttpComponent.sendTempMessage(sessionKey, qq, fromGroup, null, new ArrayList<JSONObject>(){{
+            add(MessageBuilderComponent.plain("解除成功"));
+        }});
 
         JSONObject jsonObject = JSON.parseObject(Objects.requireNonNull(response.body()).string());
 
