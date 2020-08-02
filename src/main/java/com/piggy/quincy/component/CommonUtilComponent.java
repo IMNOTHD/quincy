@@ -53,7 +53,7 @@ public class CommonUtilComponent {
             return;
         }
 
-        double unbanProbability = this.getUnbanProbability() / 2;
+        double unbanProbability = Math.log(Math.pow(this.getUnbanProbability() + 1, 5));
         double randomNum = Math.random() * 100;
 
         if (randomNum > unbanProbability) {
@@ -63,7 +63,7 @@ public class CommonUtilComponent {
             return;
         }
 
-        Response response = miraiApiHttpComponent.mute(sessionKey, fromGroup, qq, 0);
+        Response response = miraiApiHttpComponent.unmute(sessionKey, fromGroup, qq);
         miraiApiHttpComponent.sendTempMessage(sessionKey, qq, fromGroup, null, new ArrayList<JSONObject>(){{
             add(MessageBuilderComponent.plain("解除成功"));
         }});

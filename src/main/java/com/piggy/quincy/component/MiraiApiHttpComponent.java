@@ -41,6 +41,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response about() throws IOException {
+        LOGGER.info("Running about");
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + "/about")
                 .get()
@@ -59,6 +61,8 @@ public class MiraiApiHttpComponent {
     public Response auth(String authKey) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("authKey", authKey);
+
+        LOGGER.info("Running auth: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -83,6 +87,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("qq", qq);
 
+        LOGGER.info("Running verify: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -105,6 +111,8 @@ public class MiraiApiHttpComponent {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("qq", qq);
+
+        LOGGER.info("Running release: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -135,6 +143,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("quote", quote);
         jsonObject.put("messageChain", messageChain);
 
+        LOGGER.info("Running sendFriendMessage: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -164,6 +174,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("quote", quote);
         jsonObject.put("messageChain", messageChain);
 
+        LOGGER.info("Running sendTempMessage: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -192,6 +204,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("group", group);
         jsonObject.put("quote", quote);
         jsonObject.put("messageChain", messageChain);
+
+        LOGGER.info("Running sendGroupMessage: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -223,6 +237,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("group", group);
         jsonObject.put("urls", urls);
 
+        LOGGER.info("Running sendImageMessage: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -243,6 +259,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response uploadImage(String sessionKey, ImageType type, File img) throws IOException {
+        LOGGER.info("Running uploadImage: sessionKey{}, imageType{}, file{}", sessionKey, type.getType(), img.getName());
+
         RequestBody fileBody = RequestBody.create(MediaType.parse("multipart/form-data"), img);
 
         RequestBody requestBody = new MultipartBody.Builder()
@@ -273,6 +291,8 @@ public class MiraiApiHttpComponent {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
+
+        LOGGER.info("Running recall: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -305,6 +325,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("operate", operate.getOperate());
         jsonObject.put("message", message);
 
+        LOGGER.info("Running respNewFriendRequestEvent: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -335,6 +357,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("groupId", groupId);
         jsonObject.put("operate", operate.getOperate());
         jsonObject.put("message", message);
+
+        LOGGER.info("Running respMemberJoinRequestEvent: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -367,6 +391,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("operate", operate.getOperate());
         jsonObject.put("message", message);
 
+        LOGGER.info("Running respBotInvitedJoinGroupRequestEvent: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -385,6 +411,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response friendList(String sessionKey) throws IOException {
+        LOGGER.info("Running friendList");
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/friendList?sessionKey=%s", sessionKey))
                 .get()
@@ -401,6 +429,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response groupList(String sessionKey) throws IOException {
+        LOGGER.info("Running groupList");
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/groupList?sessionKey=%s", sessionKey))
                 .get()
@@ -418,6 +448,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response memberList(String sessionKey, Long target) throws IOException {
+        LOGGER.info("Running memberList: sessionKey{}, target{}", sessionKey, target);
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/groupList?sessionKey=%s&target=%d", sessionKey, target))
                 .get()
@@ -438,6 +470,8 @@ public class MiraiApiHttpComponent {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
+
+        LOGGER.info("Running muteAll: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -461,6 +495,8 @@ public class MiraiApiHttpComponent {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
+
+        LOGGER.info("Running unmuteAll: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -489,6 +525,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("memberId", memberId);
         jsonObject.put("time", time);
 
+        LOGGER.info("Running mute: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -500,7 +538,7 @@ public class MiraiApiHttpComponent {
     }
 
     /**
-     * 令指定群解除全体禁言（需要有相关限权）
+     * 令指定群指定群解除禁言指定群员（需要有相关限权）
      *
      * @param sessionKey session key
      * @param target     指定群的群号
@@ -513,6 +551,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
         jsonObject.put("memberId", memberId);
+
+        LOGGER.info("Running unmute: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -541,6 +581,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("memberId", memberId);
         jsonObject.put("msg", msg);
 
+        LOGGER.info("Running kick: params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -563,6 +605,8 @@ public class MiraiApiHttpComponent {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);
+
+        LOGGER.info("Running quit: params{}", jsonObject.toJSONString());
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -602,6 +646,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("target", target);
         jsonObject.put("config", config);
 
+        LOGGER.info("Running groupConfig(post): params{}", jsonObject.toJSONString());
+
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -622,6 +668,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response groupConfig(String sessionKey, Long target) throws IOException {
+        LOGGER.info("Running groupConfig(get): sessionKey{}, target{}", sessionKey, target);
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/groupConfig?sessionKey=%s&target=%d", sessionKey, target))
                 .get()
@@ -652,6 +700,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("memberId", memberId);
         jsonObject.put("info", info);
 
+        LOGGER.info("Running memberInfo(post): params{}", jsonObject.toJSONString());
+
 
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
@@ -668,10 +718,13 @@ public class MiraiApiHttpComponent {
      *
      * @param sessionKey session key
      * @param target     指定群的群号
+     * @param memberId   群员QQ号
      * @return Response
      * @throws IOException
      */
     public Response memberInfo(String sessionKey, Long target, Long memberId) throws IOException {
+        LOGGER.info("Running memberInfo(get): sessionKey{}, target{}, memberId{}", sessionKey, target, memberId);
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/memberInfo?sessionKey=%s&target=%d&memberId=%s", sessionKey, target, memberId))
                 .get()
@@ -688,6 +741,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response config(String sessionKey) throws IOException {
+        LOGGER.info("Running config(get): sessionKey{}", sessionKey);
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/config?sessionKey=%s", sessionKey))
                 .get()
@@ -711,6 +766,8 @@ public class MiraiApiHttpComponent {
         jsonObject.put("cacheSize", cacheSize);
         jsonObject.put("enableWebsocket", enableWebsocket);
 
+        LOGGER.info("Running config(post): params{}", jsonObject.toJSONString());
+
         RequestBody requestBody = RequestBody.create(JSON, jsonObject.toJSONString());
 
         Request request = new Request.Builder()
@@ -729,6 +786,8 @@ public class MiraiApiHttpComponent {
      * @throws IOException
      */
     public Response managers(String qq) throws IOException {
+        LOGGER.info("Running managers: qq{}", qq);
+
         Request request = new Request.Builder()
                 .url(botConfig.getApiUrl() + String.format("/managers?qq=%s", qq))
                 .get()
