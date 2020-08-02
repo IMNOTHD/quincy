@@ -9,6 +9,7 @@ import com.piggy.quincy.component.TaskComponent;
 import com.piggy.quincy.config.BotConfig;
 import com.piggy.quincy.service.EventService;
 import com.piggy.quincy.service.RedisService;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,8 +52,8 @@ public class EventServiceImpl implements EventService {
 
         // 抽取口球
         if (commonUtilComponent.equalMessage(messageChain, "小口球抽奖")) {
-            // 迷你的口球, 时长为[1, 60)秒
-            int randomBanTime = (int) (Math.random() * 60 + 1);
+            // 迷你的口球, 时长为[1, 5)分钟
+            int randomBanTime = (int) (Math.random() * 5 + 1);
 
             if (commonUtilComponent.isUnban()) {
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
@@ -60,7 +61,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d秒的口球，但是幸运的被赦免了", randomBanTime)));
                 }});
             } else {
-                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime);
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
@@ -77,7 +78,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d天%d小时%d分钟的口球，但是幸运的被赦免了", randomBanTime / 60 / 24, randomBanTime / 60 % 24, randomBanTime % 60)));
                 }});
             } else {
-                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
@@ -94,7 +95,7 @@ public class EventServiceImpl implements EventService {
                     add(MessageBuilderComponent.plain(String.format("抽中了%d分钟的口球，但是幸运的被赦免了", randomBanTime)));
                 }});
             } else {
-                // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
+                miraiApiHttpComponent.mute(sessionKey, group, senderQQ, randomBanTime * 60);
 
                 commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                     add(MessageBuilderComponent.at(senderQQ));
@@ -105,7 +106,7 @@ public class EventServiceImpl implements EventService {
 
         // 8小时精致睡眠
         if (commonUtilComponent.equalMessage(messageChain, "sleep")) {
-            // miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
+            miraiApiHttpComponent.mute(sessionKey, group, senderQQ, 28800);
 
             commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.at(senderQQ));
@@ -115,10 +116,25 @@ public class EventServiceImpl implements EventService {
 
         // 赦免概率
         if (commonUtilComponent.equalMessage(messageChain, "赦免概率")) {
-            commonUtilComponent.sendGroupMessage(group,  null, new ArrayList<JSONObject>(){{
+            commonUtilComponent.sendGroupMessage(group, null, new ArrayList<JSONObject>() {{
                 add(MessageBuilderComponent.at(senderQQ));
-                add(MessageBuilderComponent.plain(String.format("当前赦免概率为：%.2f", commonUtilComponent.getUnbanProbability())));
+                add(MessageBuilderComponent.plain(String.format("当前赦免概率为：%.2f%%", commonUtilComponent.getUnbanProbability())));
             }});
+        }
+
+        // 撤回bot发送的最后一条消息
+        if (commonUtilComponent.isAt(messageChain) && commonUtilComponent.hasMessage(messageChain, "撤回")) {
+            String groupKey = redisDatabase + ":sendMessage:" + String.valueOf(group);
+            Integer messageId = (Integer) redisService.listRightPop(groupKey);
+            if (messageId != null) {
+                Response response = miraiApiHttpComponent.recall(sessionKey, messageId);
+                JSONObject responseJson = JSONObject.parseObject(response.body().string());
+                if (responseJson.getInteger("code") != 0) {
+                    miraiApiHttpComponent.sendGroupMessage(sessionKey, group, null, null, new ArrayList<JSONObject>() {{
+                        add(MessageBuilderComponent.plain("撤回失败"));
+                    }});
+                }
+            }
         }
     }
 
@@ -149,10 +165,8 @@ public class EventServiceImpl implements EventService {
         Long group = ((JSONObject) ((JSONObject) jsonObject.get("sender")).get("group")).getLong("id");
         Long senderQQ = ((JSONObject) jsonObject.get("sender")).getLong("id");
 
-        if (commonUtilComponent.hasMessage(messageChain, "解除口球")) {
-            miraiApiHttpComponent.sendTempMessage(redisService.get(redisSessionKey).toString(), senderQQ, group, null, new ArrayList<JSONObject>() {{
-                add(MessageBuilderComponent.plain("Working on it!"));
-            }});
+        if (commonUtilComponent.equalMessage(messageChain, "解除口球")) {
+            commonUtilComponent.unbanFromPrivateMessage(senderQQ, group);
         }
 
         try {

@@ -16,3 +16,4 @@ redis:
 bot:
   config:
     random-unban-probability-limit: 50 # 赦免概率上限, [0,100)浮点数
+    unban-times-limit: 15 # unban次数上限, 5分钟恢复一次

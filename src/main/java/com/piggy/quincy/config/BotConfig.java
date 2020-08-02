@@ -25,4 +25,8 @@ public class BotConfig {
     @Value("${bot.config.random-unban-probability-limit}")
     @Getter
     private double randomUnbanProbabilityLimit;
+
+    @Value("${bot.config.unban-times-limit}")
+    @Getter
+    private int unbanTimesLimit;
 }

@@ -269,7 +269,7 @@ public class MiraiApiHttpComponent {
      * @return Response
      * @throws IOException
      */
-    public Response recall(String sessionKey, Long target) throws IOException {
+    public Response recall(String sessionKey, Integer target) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sessionKey", sessionKey);
         jsonObject.put("target", target);

@@ -2,6 +2,7 @@ package com.piggy.quincy.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.piggy.quincy.config.BotConfig;
 import com.piggy.quincy.service.RedisService;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,11 +29,80 @@ public class CommonUtilComponent {
     private RedisService redisService;
     @Autowired
     private MiraiApiHttpComponent miraiApiHttpComponent;
+    @Autowired
+    private BotConfig botConfig;
     @Value("${redis.database}")
     private String redisDatabase;
     @Value("${redis.database}:sessionKey")
     private String redisSessionKey;
 
+    /**
+     * TempMessage unban
+     * @param qq 请求QQ
+     * @param fromGroup 来源group
+     */
+    public void unbanFromPrivateMessage(Long qq, Long fromGroup) throws IOException {
+        String sessionKey = redisService.get(redisSessionKey).toString();
+        String unbanTimesKey = MessageFormat.format("{0}:unbanTimes", redisDatabase);
+        Integer unbanTimes = (Integer) redisService.hashGet(unbanTimesKey, String.valueOf(qq));
+
+        if (unbanTimes != null && unbanTimes >= botConfig.getUnbanTimesLimit()) {
+            miraiApiHttpComponent.sendTempMessage(sessionKey, qq, fromGroup, null, new ArrayList<JSONObject>(){{
+                add(MessageBuilderComponent.plain("解除次数已达上限，5分钟增加一次"));
+            }});
+            return;
+        }
+
+        Response response = miraiApiHttpComponent.mute(sessionKey, fromGroup, qq, 0);
+
+        JSONObject jsonObject = JSON.parseObject(Objects.requireNonNull(response.body()).string());
+
+        // 记录unban次数
+        if (jsonObject.getInteger("code") == 0) {
+            if (unbanTimes == null) {
+                unbanTimes = 1;
+            } else {
+                unbanTimes++;
+            }
+
+            redisService.hashSet(unbanTimesKey, String.valueOf(qq), unbanTimes);
+
+            LOGGER.info("Unban {} from Group {}", qq, fromGroup);
+        }
+    }
+
+    /**
+     * FriendMessage unban, 这类unban无次数限制
+     * @param qq 请求QQ
+     */
+    public void unbanFromPrivateMessage(Long qq) {
+
+    }
+
+    /**
+     * 判断消息中是否at了bot
+     *
+     * @param messageChain 消息链
+     * @return 判断结果
+     */
+    public boolean isAt(List<JSONObject> messageChain) {
+        for (JSONObject message : messageChain) {
+            if ("At".equals(message.getString("type")) && botConfig.getQq().equals(message.getLong("target"))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 发送群消息封装
+     *
+     * @param group        发送的目标QQ群
+     * @param quote        引用的消息, 没有填null
+     * @param messageChain 发送的消息链
+     * @throws IOException
+     */
     public void sendGroupMessage(Long group, Integer quote, List<JSONObject> messageChain) throws IOException {
         String sessionKey = redisService.get(redisSessionKey).toString();
 
@@ -38,21 +110,25 @@ public class CommonUtilComponent {
 
         JSONObject jsonObject = JSON.parseObject(Objects.requireNonNull(response.body()).string());
 
+        // 打log用
+        StringBuffer stringBuffer = new StringBuffer();
+        for (JSONObject message : messageChain) {
+            stringBuffer.append(message.toJSONString());
+        }
+
         // 推入群对应的消息栈
         if (jsonObject.getInteger("code") == 0) {
             String groupKey = redisDatabase + ":sendMessage:" + String.valueOf(group);
             redisService.listRightPush(groupKey, jsonObject.getInteger("messageId"));
+            LOGGER.info("SendGroupMessage: {} -> Group{} -> {}", stringBuffer, String.valueOf(group), jsonObject.toJSONString());
         } else {
-            StringBuffer stringBuffer = new StringBuffer();
-            for (JSONObject message : messageChain) {
-                stringBuffer.append(message.toJSONString());
-            }
             LOGGER.error("SendGroupMessageError: {} -> Group{} -> {}", stringBuffer, String.valueOf(group), jsonObject.toJSONString());
         }
     }
 
     /**
      * 获取赦免概率
+     *
      * @return 赦免概率
      */
     public double getUnbanProbability() {
@@ -63,6 +139,7 @@ public class CommonUtilComponent {
 
     /**
      * 是否赦免
+     *
      * @return true -> 赦免
      */
     public boolean isUnban() {
@@ -74,8 +151,9 @@ public class CommonUtilComponent {
 
     /**
      * 检查是否完全相等某个单词
+     *
      * @param jsonObjectList 消息链
-     * @param message 需要被检测的单词
+     * @param message        需要被检测的单词
      * @return 检测结果
      */
     public boolean equalMessage(List<JSONObject> jsonObjectList, @NotNull String message) {
@@ -96,8 +174,9 @@ public class CommonUtilComponent {
 
     /**
      * 检查是否包含某个单词
+     *
      * @param jsonObjectList 消息链
-     * @param message 需要被检测的单词
+     * @param message        需要被检测的单词
      * @return 检测结果
      */
     public boolean hasMessage(List<JSONObject> jsonObjectList, @NotNull String message) {

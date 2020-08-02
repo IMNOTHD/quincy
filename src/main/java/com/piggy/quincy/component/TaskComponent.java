@@ -13,6 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -65,9 +68,22 @@ public class TaskComponent {
      */
     @Scheduled(fixedRate = 1000 * 60 * 5)
     private void commonTask() {
-        // 赦免概率, 存入的是乘100后的概率, 避免精度问题
+        // 刷新赦免概率, 存入的是乘100后的概率, 避免精度问题
         int unbanProbability = (int) Math.floor(Math.random() * botConfig.getRandomUnbanProbabilityLimit() * 100);
         String unbanProbabilityKey = redisDatabase + ":unbanProbability";
         redisService.set(unbanProbabilityKey, String.valueOf(unbanProbability));
+
+        // 所有人的unban次数减一
+        String unbanTimesKey = MessageFormat.format("{0}:unbanTimes", redisDatabase);
+        Map<Object, Object> unbanTimesMap = redisService.hashGetAll(unbanTimesKey);
+        for (Map.Entry<Object, Object> entry : unbanTimesMap.entrySet()) {
+            Integer times = (Integer) entry.getValue();
+            times--;
+            if (times <= 0) {
+                redisService.hashDel(unbanTimesKey, entry.getKey());
+            } else {
+                redisService.hashSet(unbanTimesKey, entry.getKey().toString(), times);
+            }
+        }
     }
 }
