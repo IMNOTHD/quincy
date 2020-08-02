@@ -146,7 +146,7 @@ public class EventServiceImpl implements EventService {
         if (commonUtilComponent.equalMessage(messageChain, "赦免概率")) {
             double unbanProbability = Math.log(Math.pow(commonUtilComponent.getUnbanProbability() + 1, 5));
             miraiApiHttpComponent.sendFriendMessage(redisService.get(redisSessionKey).toString(), senderQQ, null, null, new ArrayList<JSONObject>() {{
-                add(MessageBuilderComponent.plain(String.format("%.2f%%", unbanProbability)));
+                add(MessageBuilderComponent.plain(String.format("当前赦免概率为：%.2f%%", unbanProbability)));
             }});
         }
 
@@ -178,8 +178,9 @@ public class EventServiceImpl implements EventService {
 
         if (commonUtilComponent.equalMessage(messageChain, "赦免概率")) {
             double unbanProbability = Math.log(Math.pow(commonUtilComponent.getUnbanProbability() + 1, 5));
-            miraiApiHttpComponent.sendTempMessage(redisService.get(redisSessionKey).toString(), senderQQ, null, null, new ArrayList<JSONObject>() {{
-                add(MessageBuilderComponent.plain(String.format("%.2f%%", unbanProbability)));
+
+            miraiApiHttpComponent.sendTempMessage(redisService.get(redisSessionKey).toString(), senderQQ, group, null, new ArrayList<JSONObject>(){{
+                add(MessageBuilderComponent.plain(String.format("当前赦免概率为：%.2f%%", unbanProbability)));
             }});
         }
 
