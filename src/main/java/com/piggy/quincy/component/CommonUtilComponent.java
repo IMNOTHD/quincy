@@ -58,7 +58,7 @@ public class CommonUtilComponent {
 
         if (randomNum > unbanProbability) {
             miraiApiHttpComponent.sendTempMessage(sessionKey, qq, fromGroup, null, new ArrayList<JSONObject>(){{
-                add(MessageBuilderComponent.plain(String.format("解除失败，请再试一次, UnbanProbability%.2f%%, randomNum%.2f", unbanProbability, randomNum)));
+                add(MessageBuilderComponent.plain(String.format("解除失败，请再试一次", unbanProbability, randomNum)));
             }});
             return;
         }
