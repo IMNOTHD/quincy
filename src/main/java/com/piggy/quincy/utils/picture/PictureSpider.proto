@@ -1,0 +1,42 @@
+// protoc --go_out=plugins=grpc:. PictureSpider.proto
+// protoc --grpc-gateway_out=logtostderr=true:. PictureSpider.proto
+
+syntax = "proto3";
+
+package proto.v1;
+
+import "google/api/annotations.proto";
+
+option java_package = "com.piggy.quincy.utils.picture";
+option java_outer_classname = "PictureSpiderService";
+option go_package = "v1";
+
+service PictureSpider {
+    rpc PictureUrl (PictureUrlRequest) returns (PictureUrlResponse) {
+        option (google.api.http) = {
+            get: "/api/picture-url"
+        };
+    }
+}
+
+message PictureUrlRequest {
+    string type = 1;
+    string id = 2;
+    int64 manga = 3;
+    bool cache = 4;
+    bool uploadSM = 5;
+}
+
+message PictureUrlData {
+    string originalUrl = 1;
+    string referer = 2;
+    string cacheUrl = 3;
+    string smUrl = 4;
+    bool isR18 = 5;
+}
+
+message PictureUrlResponse {
+    int32 code = 1;
+    string msg = 2;
+    PictureUrlData data = 3;
+}
