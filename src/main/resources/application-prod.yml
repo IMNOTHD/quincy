@@ -14,7 +14,7 @@ spring:
 
   data:
     mongodb:
-      host: impiggy.cn
+      host: 172.16.44.112
       port: 27017
       database: qqbot_kun
       authentication-database: qqbot_kun

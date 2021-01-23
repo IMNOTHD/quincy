@@ -14,6 +14,7 @@ spring:
 
   data:
     mongodb:
+      # 安全组已关闭端口
       host: impiggy.cn
       port: 27017
       database: qqbot_kun

@@ -4,6 +4,7 @@ spring:
 
 mirai:
   http:
+    # 安全组已限制ip
     authKey: Usjwus927sS@$jswZ
     qq: 747460961
     api: http://tx.impiggy.cn:12345
